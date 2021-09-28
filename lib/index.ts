@@ -11,8 +11,8 @@ enum Zone {
 }
 
 interface Journey {
-  from: Station;
-  to: Station;
+  origin: Station;
+  destination: Station;
 }
 
 interface Charge extends Journey {
@@ -21,14 +21,8 @@ interface Charge extends Journey {
 
 const zoneFor = (s: Station): Zone => (s < Station.Barbican ? Zone.A : Zone.B);
 
-interface Charge {
-  from: Station;
-  to: Station;
-  amount: number;
-}
-
 const chargeFor = (journey: Journey) => {
-  if (zoneFor(journey.to) === Zone.B) {
+  if (zoneFor(journey.destination) === Zone.B) {
     return { ...journey, amount: 300 };
   }
   return { ...journey, amount: 250 };
@@ -37,8 +31,8 @@ const chargeFor = (journey: Journey) => {
 export function* bill(journeys: Array<Station>): Generator<Charge> {
   for (let i = 0; i < journeys.length; i += 2) {
     yield chargeFor({
-      from: journeys[i],
-      to: journeys[i + 1],
+      origin: journeys[i],
+      destination: journeys[i + 1],
     });
   }
 }
