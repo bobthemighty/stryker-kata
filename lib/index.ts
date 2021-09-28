@@ -9,6 +9,15 @@ enum Zone {
   B,
 }
 
+interface Journey {
+  from: Station;
+  to: Station;
+}
+
+interface Charge extends Journey {
+  amount: number;
+}
+
 const zoneFor = (s: Station): Zone => (s < Station.Barbican ? Zone.A : Zone.B);
 
 interface Charge {
@@ -17,9 +26,12 @@ interface Charge {
   amount: number;
 }
 
+const chargeFor = (journey: Journey) => {
+  if (zoneFor(journey.to) === Zone.B) return { ...journey, amount: 300 };
+  return { ...journey, amount: 250 };
+};
+
 export function bill(journeys: Array<Station>): Array<Charge> {
-  const zone = zoneFor(journeys[1]);
-  if (zone === Zone.B)
-    return [{ from: journeys[0], to: journeys[1], amount: 300 }];
-  return [{ from: journeys[0], to: journeys[1], amount: 250 }];
+  const journey = { from: journeys[0], to: journeys[1] };
+  return [chargeFor(journey)];
 }
