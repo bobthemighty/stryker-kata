@@ -51,3 +51,34 @@ describe("Multiple journeys including zone B reaching daily cap", () => {
     expect(charges[2].amount).toEqual(200);
   });
 });
+
+describe("Multiple journeys in zone A reaching daily cap", () => {
+  const journeys: Array<Station> = [
+    Station.Asterisk,
+    Station.Aldgate,
+    Station.Aldgate,
+    Station.Angel,
+    Station.Angel,
+    Station.Antelope,
+    Station.Antelope,
+    Station.Asterisk,
+  ];
+
+  const charges = Array.from(bill(journeys));
+
+  it("should charge 2.50 for his first journey", () => {
+    expect(charges[0].amount).toEqual(250);
+  });
+
+  it("should charge 2.50 for his second journey", () => {
+    expect(charges[1].amount).toEqual(250);
+  });
+
+  it("should charge 2.00 for his third journey", () => {
+    expect(charges[2].amount).toEqual(200);
+  });
+
+  it("should charge 0.00 for his final journey", () => {
+    expect(charges[3].amount).toEqual(0);
+  });
+});
