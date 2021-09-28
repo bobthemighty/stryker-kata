@@ -8,6 +8,5 @@ module.exports = function (config) {
     coverageAnalysis: "off",
     tsconfigFile: "tsconfig.json",
     mutate: ["lib/**/*.ts"],
-    logLevel: "debug",
   });
 };
