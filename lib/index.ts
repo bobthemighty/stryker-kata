@@ -39,11 +39,6 @@ function* journeysFromTaps(stations: Array<Station>): Generator<Journey> {
   }
 }
 
-interface State {
-  total: number;
-  cap: number;
-}
-
 export function* bill(taps: Array<Station>): Generator<Charge> {
   const state = { total: 0, cap: DAILY_CAP_ZONE_A };
 
