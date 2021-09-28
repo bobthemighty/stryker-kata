@@ -36,7 +36,7 @@ const isZoneB = (journey: Journey) =>
   zoneFor(journey.origin) === Zone.B || zoneFor(journey.destination) === Zone.B;
 
 const isReturn = (state: State, journey: Journey) =>
-  state.previousJourney &&
+  state.previousJourney !== undefined &&
   journey.origin === state.previousJourney.destination &&
   journey.destination === state.previousJourney.origin;
 

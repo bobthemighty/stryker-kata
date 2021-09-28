@@ -117,3 +117,21 @@ describe("Multiple return journeys", () => {
     expect(charge.amount).toEqual(0);
   });
 });
+
+describe("Two separate journeys, to and from the same destination, with different origins", () => {
+  const taps = [
+    Station.Asterisk,
+    Station.Balham,
+    Station.Barbican,
+    Station.Asterisk,
+  ];
+  it("should charge 3.00 for the first journey", () => {
+    const [charge] = bill(taps);
+    expect(charge.amount).toEqual(300);
+  });
+
+  it("should charge 3.00 for the second journey", () => {
+    const [_, charge] = bill(taps);
+    expect(charge.amount).toEqual(300);
+  });
+});
