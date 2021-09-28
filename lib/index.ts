@@ -3,6 +3,7 @@ export enum Station {
   Aldgate,
   Barbican,
   Balham,
+  Bison,
 }
 
 enum Zone {
@@ -20,19 +21,29 @@ interface Charge extends Journey {
 }
 
 const zoneFor = (s: Station): Zone => (s < Station.Barbican ? Zone.A : Zone.B);
+const DAILY_CAP = 800;
 
-const chargeFor = (journey: Journey) => {
+const priceFor = (journey: Journey) => {
   if (zoneFor(journey.destination) === Zone.B) {
-    return { ...journey, amount: 300 };
+    return 300;
   }
-  return { ...journey, amount: 250 };
+  return 250;
 };
 
 export function* bill(journeys: Array<Station>): Generator<Charge> {
+  let total = 0;
+
   for (let i = 0; i < journeys.length; i += 2) {
-    yield chargeFor({
-      origin: journeys[i],
-      destination: journeys[i + 1],
-    });
+    const journey = { origin: journeys[i], destination: journeys[i + 1] };
+    const basePrice = priceFor(journey);
+
+    const charge = {
+      ...journey,
+      amount: Math.min(basePrice, DAILY_CAP - total),
+    };
+
+    total += charge.amount;
+
+    yield charge;
   }
 }
