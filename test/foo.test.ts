@@ -100,7 +100,7 @@ describe("Multiple return journeys", () => {
   });
 });
 
-describe("Two separate journeys, to and from the same destination, with different origins", () => {
+describe("Two separate journeys, returning to the same point", () => {
   const taps = [
     Station.Asterisk,
     Station.Balham,
@@ -108,7 +108,7 @@ describe("Two separate journeys, to and from the same destination, with differen
     Station.Asterisk,
   ];
 
-  it("should charge 3.00 for the second journey", () => {
+  it("should not charge a return fare for the second journey", () => {
     const [_, charge] = bill(taps);
     expect(charge.amount).toEqual(300);
   });
