@@ -48,11 +48,7 @@ export function* bill(taps: Array<Station>): Generator<Charge> {
   const state = { total: 0, cap: DAILY_CAP_ZONE_A };
 
   for (const journey of journeysFromTaps(taps)) {
-    if (
-      zoneFor(journey.origin) === Zone.B ||
-      zoneFor(journey.destination) === Zone.B
-    )
-      state.cap = DAILY_CAP_ZONE_B;
+    if (zoneFor(journey.destination) === Zone.B) state.cap = DAILY_CAP_ZONE_B;
 
     const basePrice = priceFor(journey);
 
