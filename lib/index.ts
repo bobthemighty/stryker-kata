@@ -2,6 +2,7 @@ export enum Station {
   Asterisk,
   Aldgate,
   Barbican,
+  Balham,
 }
 
 enum Zone {
@@ -27,11 +28,17 @@ interface Charge {
 }
 
 const chargeFor = (journey: Journey) => {
-  if (zoneFor(journey.to) === Zone.B) return { ...journey, amount: 300 };
+  if (zoneFor(journey.to) === Zone.B) {
+    return { ...journey, amount: 300 };
+  }
   return { ...journey, amount: 250 };
 };
 
-export function bill(journeys: Array<Station>): Array<Charge> {
-  const journey = { from: journeys[0], to: journeys[1] };
-  return [chargeFor(journey)];
+export function* bill(journeys: Array<Station>): Generator<Charge> {
+  for (let i = 0; i < journeys.length; i += 2) {
+    yield chargeFor({
+      from: journeys[i],
+      to: journeys[i + 1],
+    });
+  }
 }
