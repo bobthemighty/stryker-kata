@@ -70,3 +70,12 @@ describe("Multiple journeys in zone A reaching daily cap", () => {
     expect(charges[2].amount).toEqual(200);
   });
 });
+
+describe("When a journey starts in zone B and ends in zone A", () => {
+  const journey = [Station.Bison, Station.Aldgate];
+
+  it("should charge 3.00", () => {
+    const [charge] = bill(journey);
+    expect(charge.amount).toEqual(300);
+  });
+});

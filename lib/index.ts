@@ -26,8 +26,11 @@ const zoneFor = (s: Station): Zone => (s < Station.Barbican ? Zone.A : Zone.B);
 const DAILY_CAP_ZONE_B = 800;
 const DAILY_CAP_ZONE_A = 700;
 
+const isZoneB = (journey: Journey) =>
+  zoneFor(journey.origin) === Zone.B || zoneFor(journey.destination) === Zone.B;
+
 const priceFor = (journey: Journey) => {
-  if (zoneFor(journey.destination) === Zone.B) {
+  if (isZoneB(journey)) {
     return 300;
   }
   return 250;
@@ -43,7 +46,7 @@ export function* bill(taps: Array<Station>): Generator<Charge> {
   const state = { total: 0, cap: DAILY_CAP_ZONE_A };
 
   for (const journey of journeysFromTaps(taps)) {
-    if (zoneFor(journey.destination) === Zone.B) state.cap = DAILY_CAP_ZONE_B;
+    if (isZoneB(journey)) state.cap = DAILY_CAP_ZONE_B;
 
     const basePrice = priceFor(journey);
 
