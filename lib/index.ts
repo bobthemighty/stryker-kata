@@ -60,13 +60,12 @@ export function* bill(taps: Array<Station>): Generator<Charge> {
 
     const amount = priceFor(state, journey);
 
-    const charge = {
+    yield {
       ...journey,
       amount,
     };
 
     state.total += amount;
     state.previousJourney = journey;
-    yield charge;
   }
 }
