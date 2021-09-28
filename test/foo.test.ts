@@ -81,10 +81,36 @@ describe("When a journey starts in zone B and ends in zone A", () => {
 });
 
 describe("Multiple return journeys", () => {
-  const taps = [Station.Bison, Station.Aldgate];
+  const taps = [
+    Station.Asterisk,
+    Station.Barbican,
+    Station.Barbican,
+    Station.Asterisk,
+    Station.Asterisk,
+    Station.Balham,
+    Station.Balham,
+    Station.Asterisk,
+  ];
 
-  it("should charge 3.00", () => {
-    const [charge] = bill(taps);
+  const charges = Array.from(bill(taps));
+
+  it("should charge 3.00 for the first journey", () => {
+    const [charge] = charges;
     expect(charge.amount).toEqual(300);
+  });
+
+  it("should charge 2.50 for the second journey", () => {
+    const [_, charge] = charges;
+    expect(charge.amount).toEqual(250);
+  });
+
+  it("should charge 1.50 for the third journey", () => {
+    const [_, __, charge] = charges;
+    expect(charge.amount).toEqual(150);
+  });
+
+  it("should charge 0 for the fourth journey", () => {
+    const [_, __, ___, charge] = charges;
+    expect(charge.amount).toEqual(0);
   });
 });

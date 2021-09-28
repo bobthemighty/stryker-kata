@@ -22,6 +22,12 @@ interface Charge extends Journey {
   amount: number;
 }
 
+interface State {
+  total: number;
+  cap: number;
+  previousJourney?: Journey;
+}
+
 const zoneFor = (s: Station): Zone => (s < Station.Barbican ? Zone.A : Zone.B);
 const DAILY_CAP_ZONE_B = 800;
 const DAILY_CAP_ZONE_A = 700;
@@ -29,11 +35,15 @@ const DAILY_CAP_ZONE_A = 700;
 const isZoneB = (journey: Journey) =>
   zoneFor(journey.origin) === Zone.B || zoneFor(journey.destination) === Zone.B;
 
-const priceFor = (journey: Journey) => {
-  if (isZoneB(journey)) {
-    return 300;
-  }
-  return 250;
+const isReturn = (state: State, journey: Journey) =>
+  state.previousJourney &&
+  journey.origin === state.previousJourney.destination &&
+  journey.destination === state.previousJourney.origin;
+
+const priceFor = (state: State, journey: Journey) => {
+  let basePrice = isZoneB(journey) ? 300 : 250;
+  if (isReturn(state, journey)) basePrice -= 50;
+  return Math.min(basePrice, state.cap - state.total);
 };
 
 function* journeysFromTaps(stations: Array<Station>): Generator<Journey> {
@@ -43,20 +53,20 @@ function* journeysFromTaps(stations: Array<Station>): Generator<Journey> {
 }
 
 export function* bill(taps: Array<Station>): Generator<Charge> {
-  const state = { total: 0, cap: DAILY_CAP_ZONE_A };
+  const state: State = { total: 0, cap: DAILY_CAP_ZONE_A };
 
   for (const journey of journeysFromTaps(taps)) {
     if (isZoneB(journey)) state.cap = DAILY_CAP_ZONE_B;
 
-    const basePrice = priceFor(journey);
+    const amount = priceFor(state, journey);
 
     const charge = {
       ...journey,
-      amount: Math.min(basePrice, state.cap - state.total),
+      amount,
     };
 
-    state.total += charge.amount;
-
+    state.total += amount;
+    state.previousJourney = journey;
     yield charge;
   }
 }
