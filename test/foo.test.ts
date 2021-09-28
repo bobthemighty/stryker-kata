@@ -94,27 +94,9 @@ describe("Multiple return journeys", () => {
 
   const charges = Array.from(bill(taps));
 
-  it("should charge 3.00 for the first journey", () => {
-    const [charge] = charges;
-    expect(charge.amount).toEqual(300);
-  });
-
   it("should charge 2.50 for the second journey", () => {
     const [_, charge] = charges;
     expect(charge.amount).toEqual(250);
-  });
-
-  /* This test is different from the spec because I can't understand why
-   * you'd only pay £1.50 for the final journey, and not £2.50
-   * */
-  it("should charge 2.50 for the third journey", () => {
-    const [_, __, charge] = charges;
-    expect(charge.amount).toEqual(250);
-  });
-
-  it("should charge 0 for the fourth journey", () => {
-    const [_, __, ___, charge] = charges;
-    expect(charge.amount).toEqual(0);
   });
 });
 
@@ -125,10 +107,6 @@ describe("Two separate journeys, to and from the same destination, with differen
     Station.Barbican,
     Station.Asterisk,
   ];
-  it("should charge 3.00 for the first journey", () => {
-    const [charge] = bill(taps);
-    expect(charge.amount).toEqual(300);
-  });
 
   it("should charge 3.00 for the second journey", () => {
     const [_, charge] = bill(taps);
