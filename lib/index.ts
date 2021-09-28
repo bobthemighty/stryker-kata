@@ -39,26 +39,29 @@ function* journeysFromTaps(stations: Array<Station>): Generator<Journey> {
   }
 }
 
+interface State {
+  total: number;
+  cap: number;
+}
+
 export function* bill(taps: Array<Station>): Generator<Charge> {
-  let total = 0;
-  let hasZoneB = false;
+  const state = { total: 0, cap: DAILY_CAP_ZONE_A };
 
   for (const journey of journeysFromTaps(taps)) {
     if (
       zoneFor(journey.origin) === Zone.B ||
       zoneFor(journey.destination) === Zone.B
     )
-      hasZoneB = true;
+      state.cap = DAILY_CAP_ZONE_B;
 
     const basePrice = priceFor(journey);
-    const cap = hasZoneB ? DAILY_CAP_ZONE_B : DAILY_CAP_ZONE_A;
 
     const charge = {
       ...journey,
-      amount: Math.min(basePrice, cap - total),
+      amount: Math.min(basePrice, state.cap - state.total),
     };
 
-    total += charge.amount;
+    state.total += charge.amount;
 
     yield charge;
   }
