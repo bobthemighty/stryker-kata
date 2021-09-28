@@ -47,23 +47,7 @@ describe("Multiple journeys including zone B reaching daily cap", () => {
 
   const charges = Array.from(bill(journeys));
 
-  it("should issue four charges", () => {
-    expect(charges).toHaveLength(4);
-  });
-
-  it("should charge 3.00 for his first journey", () => {
-    expect(charges[0].amount).toEqual(300);
-  });
-
-  it("should charge 3.00 for his second journey", () => {
-    expect(charges[1].amount).toEqual(300);
-  });
-
   it("should charge 2.00 for his third journey", () => {
     expect(charges[2].amount).toEqual(200);
-  });
-
-  it("should charge 0.00 for his final journey", () => {
-    expect(charges[3].amount).toEqual(0);
   });
 });
